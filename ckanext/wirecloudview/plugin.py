@@ -36,7 +36,7 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
     def update_config(self, config):
         p.toolkit.add_template_directory(config, 'templates')
-        p.toolkit.add_resource('fanstatic', 'example_theme')
+        p.toolkit.add_resource('fanstatic', 'wirecloud_typeahead')
 
 
     def info(self):
@@ -53,8 +53,6 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
         return False #If someone adds this view to default_views to avoid an empty iframe
 
     def view_template(self, context, data_dict):
-        log.debug("VIEW TEMPLATE")
-        get_workspaces()
         return 'wirecloud_view.html'
 
     def form_template(self, context, data_dict):        
