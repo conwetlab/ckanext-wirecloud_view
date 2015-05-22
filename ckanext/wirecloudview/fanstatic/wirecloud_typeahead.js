@@ -5,8 +5,9 @@ ckan.module('wirecloud_typeahead', function ($, _) {
 		initialize: function () {
 
 			$.proxyAll(this, /_on/);
+			var endata, map;
 
-			workspaces = JSON.parse(this.options.workspaces);
+			var workspaces = this.options.workspaces;
 
 
 			/* {  Workspaces JSON structure
@@ -27,13 +28,18 @@ ckan.module('wirecloud_typeahead', function ($, _) {
 					endata = [];
 					map = {};
 
-					$.each(data, function (i, workspace) {
+					$.each(workspaces, function (i, workspace) {
 						map[workspace.id] = workspace;
 						endata.push(workspace.name);
 					});
 
 					process(endata);
 				},
+				updater: function (item) {
+				    //TODO Associate the id with the item and save the real item
+				    //selectedState = map[item].stateCode;
+				    return item;
+				}
 			});
 
 		}

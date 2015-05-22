@@ -21,7 +21,7 @@ def get_workspaces():
     token = p.toolkit.c.usertoken
     oauth = OAuth2Session(client_id, token=token)    
     response = oauth.get(wcURL + "/api/workspaces" + '?access_token=%s' % token['access_token'])        
-    workspaces = json.loads(response.text)
+    workspaces = response.text
 
     return workspaces
 
