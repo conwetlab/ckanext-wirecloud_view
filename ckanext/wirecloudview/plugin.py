@@ -19,15 +19,14 @@ def get_workspaces():
     log.debug("GET WORKSPACES()")   
     
     token = p.toolkit.c.usertoken
-    oauth = OAuth2Session(client_id, token=token)
-    
-    response = oauth.get( wcURL + "\\api\workspaces" + '?access_token=%s' % token['access_token'])
-    log.debug(response.text)
+    oauth = OAuth2Session(client_id, token=token)    
+    response = oauth.get(wcURL + "/api/workspaces" + '?access_token=%s' % token['access_token'])        
     workspaces = json.loads(response.text)
 
-    #log.debug(workspaces)
-
     return workspaces
+
+def search_workspaces():
+    log.debug("ITS CALLED")
 
 class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
@@ -37,6 +36,7 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
     def update_config(self, config):
         p.toolkit.add_template_directory(config, 'templates')
+        p.toolkit.add_resource('fanstatic', 'example_theme')
 
 
     def info(self):
