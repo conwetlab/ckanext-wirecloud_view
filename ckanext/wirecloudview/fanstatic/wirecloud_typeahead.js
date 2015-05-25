@@ -2,6 +2,7 @@
 
 ckan.module('wirecloud_typeahead', function ($, _) {
 	return {
+
 		initialize: function () {
 
 			$.proxyAll(this, /_on/);
@@ -9,27 +10,20 @@ ckan.module('wirecloud_typeahead', function ($, _) {
 			var workspaces = {};
 			var baseURL = this.options.baseurl;			
 
-			$.each(this.options.workspaces, function (i, workspace) {
-				//workspaces[workspace.id] = workspace;
+			$.each(this.options.workspaces, function (i, workspace) {				
+				//We need to save the data as strings
+				//in order to make the plugin work correctly
 				endata.push(JSON.stringify(workspace));
 			});
 
-			/* {  Workspaces JSON structure
-			      "lastmodified":null,
-			      "name":"webappWatchEnv",
-			      "removable":false,
-			      "creator":"tobias-goecke",
-			      "active":false,
-			      "shared":true,
-			      "longdescription":"",
-			      "id":3539,
-			      "owned":false,
-			      "description":""
-			   }
-			*/
+			this.el.on('click', function(){
+				$(this).select();//This selects all text when the input is clicked				
+			});
+
 			this.el.typeahead({
 				source: endata,
 				matcher: function(item){
+					//The matcher returns true searching by name and creator
 					item = JSON.parse(item);
 					var localName = item.name.toLowerCase();
 					var creator = item.creator.toLowerCase();
@@ -39,15 +33,17 @@ ckan.module('wirecloud_typeahead', function ($, _) {
 					return (localNameMatch || creatorMatch);
 				},
 				updater: function (item) {
-				    //TODO Associate the id with the item and save the real item
+					//The updater sets the input value to the correct URL				    
 				    item = JSON.parse(item);									    
-				    return baseURL + item.creator + "/" + item.name ;
+				    return baseURL + item.creator + "/" + item.name + "?mode=embedded";
 				},
 				highlighter: function(item) {
+					//How the results are displayed
 					item = JSON.parse(item);
-					return item.name;
+					return "<b>" + item.name + "</b>  " + item.description;
 				},
 				sorter: function(items){
+					//How the results are sorted
 					var beginswith = []
 					, caseSensitive = []
 					, caseInsensitive = []

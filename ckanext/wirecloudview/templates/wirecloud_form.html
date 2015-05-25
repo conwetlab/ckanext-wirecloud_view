@@ -2,11 +2,9 @@
 
 {%   resource 'wirecloud_typeahead/wirecloud_typeahead.js' %}
 
-<input  data-module="wirecloud_typeahead"
-		data-module-workspaces = "{{h.get_workspaces()}}"
-		data-module-baseurl = "{{h.get_base_url()}}"
-id="field-wirecloud_url" placeholder='Search your dashboard.' value="{{data.wirecloud_url}}" autocomplete="off"/>
-
-{#
-{{ form.input('wirecloud_url', id='field-wirecloud_url', label=_('Wirecloud url'), placeholder=_('eg. https://wirecloudexample.com/usr/mashup?mode=embedded'), value=data.wirecloud_url, error=errors.wirecloud_url, is_required=True, classes=['control-full']) }}
-#}
+<div class="control-group control-full">
+    <label class="control-label" for="field-wirecloud_url"><span title="This field is required" class="control-required">*</span> Wirecloud url</label>
+    <div class="controls ">      
+    	<input id="field-wirecloud_url" type="text" name="wirecloud_url" value="{{data.wirecloud_url}}" placeholder="Search dashboard." autocomplete="off" data-module="wirecloud_typeahead" data-module-workspaces="{{h.get_workspaces()}}" data-module-baseurl = "{{h.get_base_url()}}">      
+    </div>
+  </div>

@@ -12,10 +12,8 @@ client_id = config.get('ckan.oauth2.client_id', False)
 
 if wcURL[-1:] != "/":
     wcURL += "/"
-    
-def is_url(url):
-    log.debug("Calling is_url")
-    log.debug(url)
+
+def process_url(url):
     if not re.match('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', url):
         raise Invalid('This field must contain a valid url.')
     return url
@@ -24,7 +22,7 @@ def get_base_url():
     return wcURL
 
 def get_workspaces():
-    log.debug("GET WORKSPACES()")   
+    #log.debug("GET WORKSPACES()")   
     
     token = p.toolkit.c.usertoken
     oauth = OAuth2Session(client_id, token=token)    
@@ -32,9 +30,6 @@ def get_workspaces():
     workspaces = response.text
 
     return workspaces
-
-def search_workspaces():
-    log.debug("ITS CALLED")
 
 class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
@@ -51,7 +46,7 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
         return {'name': 'wirecloud_view',
                 'title': 'Wirecloud',
                 'icon': 'bar-chart',
-                'schema': {'wirecloud_url': [unicode, is_url]},
+                'schema': {'wirecloud_url': [unicode, process_url]},
                 'iframed': False,
                 'always_available': True,
                 'default_title': 'Wirecloud'
