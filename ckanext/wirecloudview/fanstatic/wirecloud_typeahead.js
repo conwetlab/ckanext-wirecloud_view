@@ -5,10 +5,14 @@ ckan.module('wirecloud_typeahead', function ($, _) {
 		initialize: function () {
 
 			$.proxyAll(this, /_on/);
-			var endata, map;
+			var endata = [];			
+			var workspaces = {};
+			var baseURL = this.options.baseurl;			
 
-			var workspaces = this.options.workspaces;
-
+			$.each(this.options.workspaces, function (i, workspace) {
+				//workspaces[workspace.id] = workspace;
+				endata.push(JSON.stringify(workspace));
+			});
 
 			/* {  Workspaces JSON structure
 			      "lastmodified":null,
@@ -24,21 +28,39 @@ ckan.module('wirecloud_typeahead', function ($, _) {
 			   }
 			*/
 			this.el.typeahead({
-				source: function (query, process) {
-					endata = [];
-					map = {};
+				source: endata,
+				matcher: function(item){
+					item = JSON.parse(item);
+					var localName = item.name.toLowerCase();
+					var creator = item.creator.toLowerCase();
+					var localNameMatch = localName.indexOf(this.query.toLowerCase()) != -1;
+					var creatorMatch = creator.indexOf(this.query.toLowerCase()) != -1
 
-					$.each(workspaces, function (i, workspace) {
-						map[workspace.id] = workspace;
-						endata.push(workspace.name);
-					});
-
-					process(endata);
+					return (localNameMatch || creatorMatch);
 				},
 				updater: function (item) {
 				    //TODO Associate the id with the item and save the real item
-				    //selectedState = map[item].stateCode;
-				    return item;
+				    item = JSON.parse(item);									    
+				    return baseURL + item.creator + "/" + item.name ;
+				},
+				highlighter: function(item) {
+					item = JSON.parse(item);
+					return item.name;
+				},
+				sorter: function(items){
+					var beginswith = []
+					, caseSensitive = []
+					, caseInsensitive = []
+					, item
+
+					while (item = items.shift()) {
+						var name = JSON.parse(item).name;
+						if (!name.toLowerCase().indexOf(this.query.toLowerCase())) beginswith.push(item)
+						else if (~name.indexOf(this.query)) caseSensitive.push(item)
+						else caseInsensitive.push(item)
+					}
+
+					return beginswith.concat(caseSensitive, caseInsensitive)
 				}
 			});
 

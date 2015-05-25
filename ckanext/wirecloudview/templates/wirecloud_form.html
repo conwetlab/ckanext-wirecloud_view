@@ -2,9 +2,10 @@
 
 {%   resource 'wirecloud_typeahead/wirecloud_typeahead.js' %}
 
-<input 	data-module="wirecloud_typeahead"
+<input  data-module="wirecloud_typeahead"
 		data-module-workspaces = "{{h.get_workspaces()}}"
-id="field-wirecloud_url" placeholder='Search your dashboard' value = "{{data.wirecloud_url}}" />
+		data-module-baseurl = "{{h.get_base_url()}}"
+id="field-wirecloud_url" placeholder='Search your dashboard.' value="{{data.wirecloud_url}}" autocomplete="off"/>
 
 {#
 {{ form.input('wirecloud_url', id='field-wirecloud_url', label=_('Wirecloud url'), placeholder=_('eg. https://wirecloudexample.com/usr/mashup?mode=embedded'), value=data.wirecloud_url, error=errors.wirecloud_url, is_required=True, classes=['control-full']) }}
