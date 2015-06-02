@@ -22,7 +22,7 @@ def get_base_url():
     return wcURL
 
 def get_workspaces():
-    #log.debug("GET WORKSPACES()")   
+    log.debug("GET WORKSPACES()")   
     
     token = p.toolkit.c.usertoken
     oauth = OAuth2Session(client_id, token=token)    
