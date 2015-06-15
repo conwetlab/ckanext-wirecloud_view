@@ -1,10 +1,14 @@
 {% import 'macros/form.html' as form %}
 
-{%   resource 'wirecloud_typeahead/wirecloud_typeahead.js' %}
+{% resource 'wirecloud_typeahead/wirecloud_typeahead.js' %}
+{% resource 'wirecloud_view/wirecloud_view.css' %}
 
+<span class="wc_sp first"><b>Option 1:</b> Search an existing dashboard</span>
 <div class="control-group control-full">
-    <label class="control-label" for="field-wirecloud_url"><span title="This field is required" class="control-required">*</span> Wirecloud url</label>
-    <div class="controls ">      
+    <div>      
     	<input id="field-wirecloud_url" type="text" name="wirecloud_url" value="{{data.wirecloud_url}}" placeholder="Search dashboard." autocomplete="off" data-module="wirecloud_typeahead" data-module-workspaces="{{h.get_workspaces()}}" data-module-baseurl = "{{h.get_base_url()}}">      
-    </div>
+    </div>    
   </div>
+
+  <span class="wc_sp"><b>Option 2:</b> Create your own dashboard</span>
+  <iframe style="margin:auto; height:500px;display:block; width:100%;" src="{{ h.get_editor_url() }}" frameborder="0" allowfullscreen></iframe>

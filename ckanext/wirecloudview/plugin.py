@@ -8,6 +8,7 @@ import json
 
 log = logging.getLogger(__name__)
 wcURL = config.get('ckan.wirecloud_view.url', False)
+editor_url = config.get('ckan.wirecloud_view.editor_url', False)
 client_id = config.get('ckan.oauth2.client_id', False)
 
 if wcURL[-1:] != "/":
@@ -21,12 +22,14 @@ def process_url(url):
 def get_base_url():
     return wcURL
 
+def get_editor_url():
+    return editor_url
+
 def get_workspaces():
-    log.debug("GET WORKSPACES()")   
-    
-    token = p.toolkit.c.usertoken
-    oauth = OAuth2Session(client_id, token=token)    
-    response = oauth.get(wcURL + "api/workspaces" + '?access_token=%s' % token['access_token'])        
+      
+    token = p.toolkit.c.usertoken #get the token from oauth2 plugin
+    oauth = OAuth2Session(client_id, token=token)
+    response = oauth.get(wcURL + "api/workspaces" + '?access_token=%s' % token['access_token']) #make the request
     workspaces = response.text
 
     return workspaces
@@ -40,6 +43,7 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
     def update_config(self, config):
         p.toolkit.add_template_directory(config, 'templates')
         p.toolkit.add_resource('fanstatic', 'wirecloud_typeahead')
+        p.toolkit.add_resource('fanstatic', 'wirecloud_view')
 
 
     def info(self):
@@ -63,4 +67,5 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
     def get_helpers(self):
         return {'get_workspaces': get_workspaces,
-                'get_base_url': get_base_url}
+                'get_base_url': get_base_url,
+                'get_editor_url': get_editor_url}
