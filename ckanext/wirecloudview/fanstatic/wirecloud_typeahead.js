@@ -6,18 +6,18 @@ ckan.module('wirecloud_typeahead', function ($, _) {
 		initialize: function () {
 
 			$.proxyAll(this, /_on/);
-			var endata = [];			
+			var endata = [];
 			var workspaces = {};
-			var baseURL = this.options.baseurl;			
+			var baseURL = this.options.baseurl;
 
-			$.each(this.options.workspaces, function (i, workspace) {				
+			$.each(this.options.workspaces, function (i, workspace) {
 				//We need to save the data as strings
 				//in order to make the plugin work correctly
 				endata.push(JSON.stringify(workspace));
 			});
 
 			this.el.on('click', function(){
-				$(this).select();//This selects all text when the input is clicked				
+				$(this).select();//This selects all text when the input is clicked
 			});
 
 			this.el.typeahead({
@@ -33,9 +33,9 @@ ckan.module('wirecloud_typeahead', function ($, _) {
 					return (localNameMatch || creatorMatch);
 				},
 				updater: function (item) {
-					//The updater sets the input value to the correct URL				    
-				    item = JSON.parse(item);									    
-				    return baseURL + item.creator + "/" + item.name + "?mode=embedded";
+					//The updater sets the input value to the correct URL
+				    item = JSON.parse(item);
+				    return baseURL + item.creator + "/" + item.name;
 				},
 				highlighter: function(item) {
 					//How the results are displayed

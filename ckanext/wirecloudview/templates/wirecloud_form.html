@@ -1,14 +1,19 @@
 {% import 'macros/form.html' as form %}
 
 {% resource 'wirecloud_typeahead/wirecloud_typeahead.js' %}
+{% resource 'wirecloud_option/wirecloud_option.js' %}
 {% resource 'wirecloud_view/wirecloud_view.css' %}
+<div class="option small" data-module="wirecloud_option">
+	<span class="wc_sp"><b>Option 1:</b> Search an existing dashboard</span>
+	<div class="control-group control-full">
+	    <div>
+	    	<input id="field-wirecloud_url" type="text" name="wirecloud_url" value="{{data.wirecloud_url}}" placeholder="Search dashboard." autocomplete="off" data-module="wirecloud_typeahead" data-module-workspaces="{{h.get_workspaces()}}" data-module-baseurl = "{{h.get_base_url()}}">
+		</div>
+	</div>
+</div>
+<input id="field-view_id" type="text" name="view_id" value="{{h.get_view_id()}}" style="display:none">
 
-<span class="wc_sp first"><b>Option 1:</b> Search an existing dashboard</span>
-<div class="control-group control-full">
-    <div>      
-    	<input id="field-wirecloud_url" type="text" name="wirecloud_url" value="{{data.wirecloud_url}}" placeholder="Search dashboard." autocomplete="off" data-module="wirecloud_typeahead" data-module-workspaces="{{h.get_workspaces()}}" data-module-baseurl = "{{h.get_base_url()}}">      
-    </div>    
-  </div>
-
-  <span class="wc_sp"><b>Option 2:</b> Create your own dashboard</span>
-  <iframe style="margin:auto; height:500px;display:block; width:100%;" src="{{ h.get_editor_url() }}" frameborder="0" allowfullscreen></iframe>
+<div class="option small">
+	<span class="wc_sp"><b>Option 2:</b> Create your own dashboard</span>
+	<iframe id="graph_editor" style="margin:auto; height:900px;display:block; width:100%;" src="{{ h.get_editor_url() + '&resourceid=' + resource.get('id')+ '&viewid=' + h.get_view_id()}}" frameborder="0" allowfullscreen></iframe>
+</div>
