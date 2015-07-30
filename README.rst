@@ -1,12 +1,11 @@
-.. You should enable this project on travis-ci.org and coveralls.io to make
-   these badges work. The necessary Travis and Coverage config files have been
-   generated for you.
-
 =============
 ckanext-wirecloudview
 =============
 
-CKAN view extension for the creation and display of resource data visualization dashboards through Wirecloud embbeded dashboards. 
+CKAN view extension for the creation and display of resource data visualization dashboards through Wirecloud embbeded dashboards.
+
+With this extension you can create a view for a resource using Wirecloud. You can set the view to load an existing mashup or
+create your own mashup directly from the editing view page in CKAN.
 
 
 ------------
@@ -43,8 +42,15 @@ To install ckanext-wirecloud_view:
 Config Settings
 ---------------
 
-    # Wirecloud url    
+Before using this extension you must set the next variables in your CKAN config file
+(production.ini or development.ini)::
+
+    # Wirecloud URL: the URL of the Wirecloud instance
     ckanext.wirecloud_view.url = https://yourwirecloudurl.com
+
+    # Editor URL: the URL of the workspace that works
+    # as an editor for creating new mashups
+    ckanext.wirecloud_view.url = https://yourwirecloudurl.com/YourUser/YourEditorWorkspace
 
 
 ------------------------
@@ -54,7 +60,7 @@ Development Installation
 To install ckanext-wirecloudview for development, activate your CKAN virtualenv and
 do::
 
-    git clone https://github.com/billescas/ckanext-wirecloudview.git
-    cd ckanext-wirecloudview
+    git clone https://github.com/billescas/ckanext-wirecloud_view.git
+    cd ckanext-wirecloud_view
     python setup.py develop
     pip install -r dev-requirements.txt
