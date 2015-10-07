@@ -46,11 +46,11 @@ Before using this extension you must set the next variables in your CKAN config 
 (production.ini or development.ini)::
 
     # Wirecloud URL: the URL of the Wirecloud instance
-    ckanext.wirecloud_view.url = https://yourwirecloudurl.com
+    ckan.wirecloud_view.url = https://yourwirecloudurl.com
 
     # Editor URL: the URL of the workspace that works
     # as an editor for creating new mashups
-    ckanext.wirecloud_view.url = https://yourwirecloudurl.com/YourUser/YourEditorWorkspace
+    ckan.wirecloud_view.editor_url = https://yourwirecloudurl.com/YourUser/YourEditorWorkspace
 
 
 ------------------------
@@ -60,7 +60,7 @@ Development Installation
 To install ckanext-wirecloudview for development, activate your CKAN virtualenv and
 do::
 
-    git clone https://github.com/billescas/ckanext-wirecloud_view.git
+    git clone https://github.com/conwetlab/ckanext-wirecloud_view.git
     cd ckanext-wirecloud_view
     python setup.py develop
     pip install -r dev-requirements.txt
