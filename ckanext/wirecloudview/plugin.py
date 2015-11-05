@@ -1,21 +1,42 @@
-import logging
-import ckan.plugins as p
-from ckan.plugins.toolkit import Invalid
-import re
-from requests_oauthlib import OAuth2Session
-import pylons.config as config
-import json
-from ckan.controllers.package import PackageController
-from ckan.common import request
+# -*- coding: utf-8 -*-
 
+# Copyright (c) 2015 CoNWeT Lab., Universidad Politécnica de Madrid
+
+# This file is part of CKAN WireCloud View Extension.
+
+# CKAN WireCloud View Extension is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# CKAN WireCloud View Extension is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+
+# You should have received a copy of the GNU Affero General Public License
+# along with CKAN WireCloud View Extension. If not, see <http://www.gnu.org/licenses/>.
+
+
+import ckan.lib.base as base
+import ckan.model as model
+import ckan.plugins as p
+import db
+import logging
+import pylons.config as config
+import re
 import random
 
+
+from ckan.plugins.toolkit import Invalid
+from requests_oauthlib import OAuth2Session
+from ckan.common import request
+
+
 log = logging.getLogger(__name__)
-wcURL = config.get('ckan.wirecloud_view.url', False)
+wirecloud_url = config.get('ckan.wirecloud_view.url', False)
 editor_url = config.get('ckan.wirecloud_view.editor_url', False)
 client_id = config.get('ckan.oauth2.client_id', False)
-
-urls_from_editor = {}
 
 url_re = re.compile('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
 
@@ -24,23 +45,9 @@ PUT = dict(method=['PUT'])
 POST = dict(method=['POST'])
 DELETE = dict(method=['DELETE'])
 
-if wcURL[-1:] != "/":
-    wcURL += "/"
+if wirecloud_url[-1:] != "/":
+    wirecloud_url += "/"
 
-def get_base_url():
-    return wcURL
-
-def get_editor_url():
-    return editor_url
-
-def get_workspaces():
-
-    token = p.toolkit.c.usertoken #get the token from oauth2 plugin
-    oauth = OAuth2Session(client_id, token=token)
-    response = oauth.get(wcURL + "api/workspaces" + '?access_token=%s' % token['access_token']) #make the request
-    workspaces = response.text
-
-    return workspaces
 
 class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
@@ -51,23 +58,31 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
     def process_url(self, url, context):
 
-        res_id = context['resource'].id
-        view_id = request.POST.get('view_id','')
+        if not url:
+            # The database may not be initialized
+            db.init_db(model)
 
-        temp_id = res_id + '/' + view_id
+            # Handle the dashboard creation made with the Wizard
+            res_id = request.url.split('/')[6]
+            view_id = request.POST.get('view_id', '')
 
-        if temp_id in urls_from_editor:
-            log.debug('URL retrieved from editor')
-            url = wcURL + urls_from_editor[temp_id]
-            del urls_from_editor[temp_id]
+            dashboard = db.Dashboard.by_resource_and_view(res_id, view_id)
+
+            if dashboard:
+                url = wirecloud_url + dashboard.dashboard_path
+
+                # Once that the view is created this information is no longer needed
+                # so we can delete the database entry
+                model.Session.delete(dashboard)
 
         if not url_re.match(url):
             raise Invalid('This field must contain a valid url.')
 
-        #if not wcURL in url:
+        # if not wirecloud_url in url:
         #    raise Invalid('The url must come from Wirecloud.')
 
-        if not "?mode=embedded" in url:
+        # Use the embedded mode
+        if "?mode=embedded" not in url:
             url += "?mode=embedded"
 
         return url
@@ -78,20 +93,20 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
         p.toolkit.add_resource('fanstatic', 'wirecloud_option')
         p.toolkit.add_resource('fanstatic', 'wirecloud_view')
 
-
     def info(self):
         return {'name': 'wirecloud_view',
                 'title': 'Wirecloud',
                 'icon': 'bar-chart',
                 'schema': {'wirecloud_url': [unicode, self.process_url],
-                            'view_id': [unicode]},
+                           'view_id': [unicode]},
                 'iframed': False,
                 'always_available': True,
                 'default_title': 'Wirecloud'
                 }
 
     def can_view(self, data_dict):
-        return False #If someone adds this view to default_views to avoid an empty iframe
+        # If someone adds this view to default_views to avoid an empty iframe
+        return False
 
     def view_template(self, context, data_dict):
         log.debug("view_template CALLED")
@@ -99,33 +114,49 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
     def form_template(self, context, data_dict):
         self.view_id = int(round(random.random() * 10000))
-
-        log.debug("form_template CALLED")
-        log.debug("View id: " + `self.view_id`)
-
+        log.debug("View id: " + str(self.view_id))
         return 'wirecloud_form.html'
 
     def get_view_id(self):
         return str(self.view_id)
 
     def get_helpers(self):
-        return {'get_workspaces': get_workspaces,
-                'get_base_url': get_base_url,
-                'get_editor_url': get_editor_url,
-                'get_view_id': self.get_view_id}
+
+        def _get_workspaces():
+
+            token = p.toolkit.c.usertoken   # get the token from oauth2 plugin
+            oauth = OAuth2Session(client_id, token=token)
+            response = oauth.get(wirecloud_url + "api/workspaces" + '?access_token=%s' % token['access_token']) #make the request
+            workspaces = response.text
+
+            return workspaces
+
+        return {'get_workspaces': _get_workspaces,
+                'get_base_url': lambda: wirecloud_url,
+                'get_editor_url': lambda: editor_url,
+                'get_view_id': lambda: str(self.view_id)
+                }
 
     def before_map(self, m):
-        m.connect('/wirecloud_view/resource/{resource_id}/view/{view_id}/workspace/{wc_url:.* ?}',
+        # FIXME: Include all the content in the body of the request
+        m.connect('/wirecloud_view/resource/{resource_id}/view/{view_id}/workspace/{dashboard_path:.* ?}',
                   controller='ckanext.wirecloudview.plugin:WirecloudViewController',
-                  action='update_url', conditions=POST)
+                  action='notify_dashboard_path', conditions=POST)
+
         return m
 
-#TODO: How to read wc_url as a POST parameter instead of directly from URL path????
-class WirecloudViewController(PackageController):
 
-    def update_url(self, resource_id, view_id, wc_url): #view_id,
+class WirecloudViewController(base.BaseController):
 
-        urls_from_editor[resource_id+'/'+view_id] = wc_url
-        log.debug("Update url called")
-        log.debug(urls_from_editor)
-        return wc_url
+    def notify_dashboard_path(self, resource_id, view_id, dashboard_path):
+
+        # The database may not be initialized
+        db.init_db(model)
+
+        dashboard = db.Dashboard()
+        dashboard.resource_id = resource_id
+        dashboard.view_id = view_id
+        dashboard.dashboard_path = dashboard_path
+
+        model.Session.add(dashboard)
+        model.Session.commit()
