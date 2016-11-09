@@ -15,11 +15,11 @@
 
 .small {
 	transition: 0.2s;
-	max-height:20px;
+	max-height: 20px;
 	background: #F0F0F0;
 }
 
-.small:hover{
+.small:hover {
 	cursor: pointer;
 	background: #FCFCFC;
 	transition: 0.2s;

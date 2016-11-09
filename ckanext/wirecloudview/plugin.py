@@ -79,9 +79,6 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
         if not url_re.match(url):
             raise Invalid('This field must contain a valid url.')
 
-        # if not wirecloud_url in url:
-        #    raise Invalid('The url must come from Wirecloud.')
-
         # Use the embedded mode
         if "?mode=embedded" not in url:
             url += "?mode=embedded"
@@ -95,15 +92,18 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
         p.toolkit.add_resource('fanstatic', 'wirecloud_view')
 
     def info(self):
-        return {'name': 'wirecloud_view',
-                'title': 'Wirecloud',
-                'icon': 'bar-chart',
-                'schema': {'wirecloud_url': [unicode, self.process_url],
-                           'view_id': [unicode]},
-                'iframed': False,
-                'always_available': True,
-                'default_title': 'Wirecloud'
-                }
+        return {
+            'name': 'wirecloud_view',
+            'title': 'WireCloud',
+            'icon': 'bar-chart',
+            'schema': {
+                'wirecloud_url': [unicode, self.process_url],
+                'view_id': [unicode]
+            },
+            'iframed': False,
+            'always_available': True,
+            'default_title': 'WireCloud'
+        }
 
     def can_view(self, data_dict):
         # If someone adds this view to default_views to avoid an empty iframe
@@ -125,9 +125,11 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
         def _get_workspaces():
 
-            token = p.toolkit.c.usertoken   # get the token from oauth2 plugin
+            # Create a OAuth2 session
+            token = p.toolkit.c.usertoken
             oauth = OAuth2Session(client_id, token=token)
-            response = oauth.get(wirecloud_url + "api/workspaces" + '?access_token=%s' % token['access_token']) #make the request
+            # Request workspaces
+            response = oauth.get(wirecloud_url + "api/workspaces" + '?access_token=%s' % token['access_token'])
             return response.text
 
         return {
