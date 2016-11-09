@@ -26,6 +26,7 @@ import logging
 import pylons.config as config
 import re
 import random
+from urlparse import urljoin
 
 
 from ckan.plugins.toolkit import Invalid
@@ -34,8 +35,8 @@ from ckan.common import request
 
 
 log = logging.getLogger(__name__)
-wirecloud_url = config.get('ckan.wirecloud_view.url', False)
-editor_url = config.get('ckan.wirecloud_view.editor_url', False)
+wirecloud_url = config.get('ckan.wirecloud_view.url', 'https://mashup.lab.fiware.org')
+editor_dashboard = config.get('ckan.wirecloud_view.editor_dashboard', 'wirecloud/ckan-editor')
 client_id = config.get('ckan.oauth2.client_id', False)
 
 url_re = re.compile('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
@@ -127,15 +128,14 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
             token = p.toolkit.c.usertoken   # get the token from oauth2 plugin
             oauth = OAuth2Session(client_id, token=token)
             response = oauth.get(wirecloud_url + "api/workspaces" + '?access_token=%s' % token['access_token']) #make the request
-            workspaces = response.text
+            return response.text
 
-            return workspaces
-
-        return {'get_workspaces': _get_workspaces,
-                'get_base_url': lambda: wirecloud_url,
-                'get_editor_url': lambda: editor_url,
-                'get_view_id': lambda: str(self.view_id)
-                }
+        return {
+            'get_workspaces': _get_workspaces,
+            'get_base_url': lambda: wirecloud_url,
+            'get_editor_url': lambda: urljoin(wirecloud_url, editor_dashboard),
+            'get_view_id': lambda: str(self.view_id)
+        }
 
     def before_map(self, m):
         # FIXME: Include all the content in the body of the request

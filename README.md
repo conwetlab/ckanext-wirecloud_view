@@ -30,25 +30,22 @@ To install ckanext-wirecloud_view:
 3. Add `wirecloud_view` to the `ckan.plugins` setting in your CKAN
    config file (e.g. `/etc/ckan/default/production.ini`).
 
-4. Restart CKAN. For example if you've deployed CKAN with Apache:
+4. Add proper values for the `ckan.wirecloud_view.url` and
+   `ckan.wirecloud_view.editor_dashboard` settings in your CKAN config file:
+
+   ```ini
+   # URL of the WireCloud instance to use for creating the dashboards
+   ckan.wirecloud_view.url = https://mashup.lab.fiware.org
+
+   # ID of the dashboard/workspace to use for creating new visualization dashboards
+   ckan.wirecloud_view.editor_dashboard = wirecloud/ckan-editor
+   ```
+
+5. Restart CKAN. For example if you've deployed CKAN with Apache:
 
     ```
     sudo service apache2 graceful
     ```
-
-## Config Settings
-
-Before using this extension you must set the next variables in your CKAN config file
-(`production.ini` or `development.ini`):
-
-```ini
-# WireCloud URL: the URL of the WireCloud instance
-ckan.wirecloud_view.url = https://yourwirecloudurl.com
-
-# Editor URL: the URL of the workspace that works
-# as an editor for creating new mashups
-ckan.wirecloud_view.editor_url = https://yourwirecloudurl.com/YourUser/YourEditorWorkspace
-```
 
 ## Development Installation
 
