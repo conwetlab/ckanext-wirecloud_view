@@ -1,56 +1,53 @@
 "use strict";
 
 ckan.module('wirecloud_typeahead', function ($, _) {
+
+    var toString = function toString() {
+        return this.owner + '/' + this.name;
+    };
+
 	return {
 
 		initialize: function () {
 
 			$.proxyAll(this, /_on/);
-			var endata = [];
-			var workspaces = {};
+			var workspaces = this.options.workspaces;
 			var baseURL = this.options.baseurl;
 
-			$.each(this.options.workspaces, function (i, workspace) {
-				//We need to save the data as strings
-				//in order to make the plugin work correctly
-				endata.push(JSON.stringify(workspace));
-			});
+            // Add a toString method to workspaces
+            this.options.workspaces.forEach(function (workspace) {
+                workspace.toString = toString;
+            });
 
-			this.el.on('click', function(){
-				$(this).select();//This selects all text when the input is clicked
+            // Select input text on focus
+			this.el.on('focus', function () {
+				$(this).select();
 			});
 
 			this.el.typeahead({
-				source: endata,
-				matcher: function(item){
-					//The matcher returns true searching by name and creator
-					item = JSON.parse(item);
+				source: workspaces,
+				matcher: function (item) {
 					var localName = item.name.toLowerCase();
-					var creator = item.creator.toLowerCase();
+					var owner = item.owner.toLowerCase();
 					var localNameMatch = localName.indexOf(this.query.toLowerCase()) != -1;
-					var creatorMatch = creator.indexOf(this.query.toLowerCase()) != -1
+					var ownerMatch = owner.indexOf(this.query.toLowerCase()) != -1
 
-					return (localNameMatch || creatorMatch);
+					return (localNameMatch || ownerMatch);
 				},
-				updater: function (item) {
-					//The updater sets the input value to the correct URL
-				    item = JSON.parse(item);
-				    return baseURL + item.creator + "/" + item.name;
+				updater: function (dashboard) {
+				    return new URL(dashboard, baseURL);
 				},
 				highlighter: function(item) {
-					//How the results are displayed
-					item = JSON.parse(item);
-					return "<b>" + item.name + "</b>  " + item.description;
+					return "<b>" + item.owner + "/" + item.name + "</b>  " + item.description;
 				},
-				sorter: function(items){
-					//How the results are sorted
-					var beginswith = []
-					, caseSensitive = []
-					, caseInsensitive = []
-					, item
+				sorter: function (items) {
+					var beginswith = [],
+					    caseSensitive = [],
+					    caseInsensitive = [],
+					    item;
 
 					while (item = items.shift()) {
-						var name = JSON.parse(item).name;
+						var name = item.name;
 						if (!name.toLowerCase().indexOf(this.query.toLowerCase())) beginswith.push(item)
 						else if (~name.indexOf(this.query)) caseSensitive.push(item)
 						else caseInsensitive.push(item)
