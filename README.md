@@ -63,4 +63,3 @@ do::
     git clone https://github.com/conwetlab/ckanext-wirecloud_view.git
     cd ckanext-wirecloud_view
     python setup.py develop
-    pip install -r dev-requirements.txt
