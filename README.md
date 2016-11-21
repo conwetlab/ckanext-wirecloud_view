@@ -2,8 +2,8 @@
 
 CKAN view extension for the creation and display of resource data visualization dashboards through WireCloud embbeded dashboards.
 
-With this extension you can create a view for a resource using WireCloud. You can set the view to load an existing mashup or
-create your own mashup directly from the editing view page in CKAN.
+With this extension you can create a view for a resource using WireCloud. You can set the view to load an existing dashboard or
+create a custom dashboard from the from the view form.
 
 
 ## Requirements
@@ -21,7 +21,7 @@ To install ckanext-wirecloud_view:
     . /usr/lib/ckan/default/bin/activate
     ```
 
-2. Install the ckanext-wirecloudview Python package into your virtual environment::
+2. Install the ckanext-wirecloudview Python package into your virtual environment:
 
     ```
     pip install ckanext-wirecloud_view
@@ -33,13 +33,13 @@ To install ckanext-wirecloud_view:
 4. Add proper values for the `ckan.wirecloud_view.url` and
    `ckan.wirecloud_view.editor_dashboard` settings in your CKAN config file:
 
-   ```ini
-   # URL of the WireCloud instance to use for creating the dashboards
-   ckan.wirecloud_view.url = https://mashup.lab.fiware.org
+    ```ini
+    # URL of the WireCloud instance to use for creating the dashboards
+    ckan.wirecloud_view.url = https://mashup.lab.fiware.org
 
-   # ID of the dashboard/workspace to use for creating new visualization dashboards
-   ckan.wirecloud_view.editor_dashboard = wirecloud/ckan-editor
-   ```
+    # ID of the dashboard/workspace to use for creating new visualization dashboards
+    ckan.wirecloud_view.editor_dashboard = wirecloud/ckan-editor
+    ```
 
 5. Restart CKAN. For example if you've deployed CKAN with Apache:
 
