@@ -3,7 +3,7 @@
 CKAN view extension for the creation and display of resource data visualization dashboards through WireCloud embbeded dashboards.
 
 With this extension you can create a view for a resource using WireCloud. You can set the view to load an existing dashboard or
-create a custom dashboard from the from the view form.
+create a custom dashboard from the view form.
 
 
 ## Requirements
