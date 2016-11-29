@@ -1,1 +1,1 @@
-<iframe style="margin:auto; max-height:100%; display:block; width:100%;" src="{{ resource_view.get('wirecloud_url') + '&resourceid=' + resource.get('id') }}" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+<iframe style="margin:auto; max-height:100%; display:block; width:100%;" src="{{ h.get_dashboard_url(resource_view.get('dashboard'), resource_view.get('id'), "://".join(h.get_site_protocol_and_host())) }}" frameborder="0" allowfullscreen="allowfullscreen"></iframe>

@@ -12,7 +12,6 @@ ckan.module('wirecloud_typeahead', function ($, _) {
 
 			$.proxyAll(this, /_on/);
 			var workspaces = this.options.workspaces;
-			var baseURL = this.options.baseurl;
 
             // Add a toString method to workspaces
             this.options.workspaces.forEach(function (workspace) {
@@ -35,7 +34,7 @@ ckan.module('wirecloud_typeahead', function ($, _) {
 					return (localNameMatch || ownerMatch);
 				},
 				updater: function (dashboard) {
-				    return new URL(dashboard, baseURL);
+				    return dashboard;
 				},
 				highlighter: function(item) {
 					return "<b>" + item.owner + "/" + item.name + "</b>  " + item.description;

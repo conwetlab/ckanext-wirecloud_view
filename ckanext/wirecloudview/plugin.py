@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2015 CoNWeT Lab., Universidad Politécnica de Madrid
+# Copyright (c) 2015-2016 CoNWeT Lab., Universidad Politécnica de Madrid
 
 # This file is part of CKAN WireCloud View Extension.
 
@@ -21,7 +21,6 @@
 import ckan.lib.base as base
 import ckan.model as model
 import ckan.plugins as p
-import db
 import logging
 import pylons.config as config
 import re
@@ -39,7 +38,7 @@ wirecloud_url = config.get('ckan.wirecloud_view.url', 'https://mashup.lab.fiware
 editor_dashboard = config.get('ckan.wirecloud_view.editor_dashboard', 'wirecloud/ckan-editor')
 client_id = config.get('ckan.oauth2.client_id', False)
 
-url_re = re.compile('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+DASHBOARD_RE = re.compile('[^/]+/[^/]+')
 
 GET = dict(method=['GET'])
 PUT = dict(method=['PUT'])
@@ -57,33 +56,14 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
     p.implements(p.ITemplateHelpers)
     p.implements(p.IRoutes, inherit=True)
 
-    def process_url(self, url, context):
+    def process_dashboardid(self, dashboardid, context):
 
-        if not url:
-            # The database may not be initialized
-            db.init_db(model)
+        dashboardid = dashboardid.strip()
 
-            # Handle the dashboard creation made with the Wizard
-            res_id = request.url.split('/')[6]
-            view_id = request.POST.get('view_id', '')
+        if not DASHBOARD_RE.match(dashboardid):
+            raise Invalid('This field must contain a valid dashboard id.')
 
-            dashboard = db.Dashboard.by_resource_and_view(res_id, view_id)
-
-            if dashboard:
-                url = wirecloud_url + dashboard.dashboard_path
-
-                # Once that the view is created this information is no longer needed
-                # so we can delete the database entry
-                model.Session.delete(dashboard)
-
-        if not url_re.match(url):
-            raise Invalid('This field must contain a valid url.')
-
-        # Use the embedded mode
-        if "?mode=embedded" not in url:
-            url += "?mode=embedded"
-
-        return url
+        return dashboardid
 
     def update_config(self, config):
         p.toolkit.add_template_directory(config, 'templates')
@@ -97,8 +77,7 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
             'title': 'WireCloud',
             'icon': 'bar-chart',
             'schema': {
-                'wirecloud_url': [unicode, self.process_url],
-                'view_id': [unicode]
+                'dashboard': [unicode, self.process_dashboardid],
             },
             'iframed': False,
             'always_available': True,
@@ -110,22 +89,16 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
         return False
 
     def view_template(self, context, data_dict):
-        log.debug("view_template CALLED")
         return 'wirecloud_view.html'
 
     def form_template(self, context, data_dict):
-        self.view_id = int(round(random.random() * 10000))
-        log.debug("View id: " + str(self.view_id))
         return 'wirecloud_form.html'
-
-    def get_view_id(self):
-        return str(self.view_id)
 
     def get_helpers(self):
 
         def _get_workspaces():
 
-            # Create a OAuth2 session
+            # Create a OAuth2 Session
             token = p.toolkit.c.usertoken
             oauth = OAuth2Session(client_id, token=token)
             # Request workspaces
@@ -134,9 +107,8 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
         return {
             'get_workspaces': _get_workspaces,
-            'get_base_url': lambda: wirecloud_url,
             'get_editor_url': lambda: urljoin(wirecloud_url, editor_dashboard),
-            'get_view_id': lambda: str(self.view_id)
+            'get_dashboard_url': lambda dashboard, resourceid, ckanserver: urljoin(wirecloud_url, dashboard) + '?mode=embedded&resourceid=' + resourceid + '&ckanserver=' + ckanserver
         }
 
     def before_map(self, m):
@@ -146,19 +118,3 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
                   action='notify_dashboard_path', conditions=POST)
 
         return m
-
-
-class WirecloudViewController(base.BaseController):
-
-    def notify_dashboard_path(self, resource_id, view_id, dashboard_path):
-
-        # The database may not be initialized
-        db.init_db(model)
-
-        dashboard = db.Dashboard()
-        dashboard.resource_id = resource_id
-        dashboard.view_id = view_id
-        dashboard.dashboard_path = dashboard_path
-
-        model.Session.add(dashboard)
-        model.Session.commit()
