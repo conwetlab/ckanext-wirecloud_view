@@ -75,7 +75,7 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
         return {
             'name': 'wirecloud_view',
             'title': 'WireCloud',
-            'icon': 'bar-chart',
+            'icon': 'bar-chart-o' if p.toolkit.check_ckan_version(min_version='2.7') else 'bar-chart',
             'schema': {
                 'dashboard': [unicode, self.process_dashboardid],
             },
