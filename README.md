@@ -1,5 +1,8 @@
 # CKAN WireCloud dashboards
 
+[![Build Status](https://travis-ci.org/conwetlab/ckanext-wirecloud_view.svg?branch=develop)](https://travis-ci.org/conwetlab/ckanext-wirecloud_view)
+[![Coverage Status](https://coveralls.io/repos/github/conwetlab/ckanext-wirecloud_view/badge.svg?branch=develop)](https://coveralls.io/github/conwetlab/ckanext-wirecloud_view?branch=develop)
+
 CKAN view extension for the creation and display of resource data visualization dashboards through WireCloud embbeded dashboards.
 
 With this extension you can create a view for a resource using WireCloud. You can set the view to load an existing dashboard or
