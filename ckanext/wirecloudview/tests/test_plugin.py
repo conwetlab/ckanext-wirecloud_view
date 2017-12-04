@@ -42,9 +42,25 @@ class WirecloudViewPluginTest(unittest.TestCase):
         with self.assertRaises(Invalid):
             plugin.process_dashboardid("a/b/c", {})
 
+    def test_can_view_returns_false(self):
+        instance = plugin.WirecloudView()
+        self.assertFalse(instance.can_view({}))
+
     def test_get_helpers(self):
         instance = plugin.WirecloudView()
         helpers = instance.get_helpers()
 
         for key, helper in six.iteritems(helpers):
             self.assertTrue(callable(helper))
+
+    def test_info_returns_dict(self):
+        instance = plugin.WirecloudView()
+        self.assertTrue(isinstance(instance.info(), dict))
+
+    def test_form_template(self):
+        instance = plugin.WirecloudView()
+        self.assertEqual(instance.form_template(None, None), "wirecloud_form.html")
+
+    def test_view_template(self):
+        instance = plugin.WirecloudView()
+        self.assertEqual(instance.view_template(None, None), "wirecloud_view.html")
