@@ -43,7 +43,7 @@ class WirecloudViewPluginTest(unittest.TestCase):
             plugin.process_dashboardid("a/b/c", {})
 
     def test_get_helpers(self):
-        instance = plugin()
+        instance = plugin.WirecloudView()
         helpers = instance.get_helpers()
 
         for key, helper in six.iteritems(helpers):
