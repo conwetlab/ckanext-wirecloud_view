@@ -38,7 +38,7 @@ wirecloud_url = config.get('ckan.wirecloud_view.url', 'https://mashup.lab.fiware
 editor_dashboard = config.get('ckan.wirecloud_view.editor_dashboard', 'wirecloud/ckan-editor')
 client_id = config.get('ckan.oauth2.client_id', False)
 
-DASHBOARD_RE = re.compile('[^/]+/[^/]+')
+DASHBOARD_RE = re.compile('^[^/]+/[^/]+$')
 
 GET = dict(method=['GET'])
 PUT = dict(method=['PUT'])

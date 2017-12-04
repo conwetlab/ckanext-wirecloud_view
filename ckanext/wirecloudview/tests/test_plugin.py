@@ -30,11 +30,11 @@ class DataRequestPluginTest(unittest.TestCase):
 
     def test_process_dashboardid_should_strip(self):
 
-        self.assertEqual(plugin.process_dashboardid("  owner/name ", {}), "onwer/name")
+        self.assertEqual(plugin.process_dashboardid("  owner/name ", {}), "owner/name")
 
     def test_process_dashboardid_should_leave_untouched_valid_dashboard_ids(self):
 
-        self.assertEqual(plugin.process_dashboardid("owner/name", {}), "onwer/name")
+        self.assertEqual(plugin.process_dashboardid("owner/name", {}), "owner/name")
 
     def test_process_dashboardid_should_raise_invalid_exception(self):
 
