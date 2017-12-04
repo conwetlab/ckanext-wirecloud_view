@@ -42,7 +42,7 @@ setup(
     author_email='wirecloud@conwet.com',
     license='AGPLv3+',
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2.6',
@@ -50,7 +50,10 @@ setup(
     ],
     keywords='CKAN dashboard data visualization WireCloud',
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
-    install_requires=['requests-oauthlib==0.5.0'],
+    install_requires=[
+        'requests-oauthlib==0.5.0',
+        'six',
+    ],
     include_package_data=True,
     package_data={},
     data_files=[],
