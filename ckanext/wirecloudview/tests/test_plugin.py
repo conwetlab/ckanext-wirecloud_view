@@ -22,11 +22,12 @@ import unittest
 
 from ckan.plugins.toolkit import Invalid
 from mock import MagicMock, patch
+import six
 
 import ckanext.wirecloudview.plugin as plugin
 
 
-class DataRequestPluginTest(unittest.TestCase):
+class WirecloudViewPluginTest(unittest.TestCase):
 
     def test_process_dashboardid_should_strip(self):
 
@@ -40,3 +41,10 @@ class DataRequestPluginTest(unittest.TestCase):
 
         with self.assertRaises(Invalid):
             plugin.process_dashboardid("a/b/c", {})
+
+    def test_get_helpers(self):
+        instance = plugin()
+        helpers = instance.get_helpers()
+
+        for key, helper in six.iteritems(helpers):
+            self.assertTrue(callable(helper))
