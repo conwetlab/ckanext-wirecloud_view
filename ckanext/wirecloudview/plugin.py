@@ -49,21 +49,22 @@ if wirecloud_url[-1:] != "/":
     wirecloud_url += "/"
 
 
+def process_dashboardid(self, dashboardid, context):
+
+    dashboardid = dashboardid.strip()
+
+    if not DASHBOARD_RE.match(dashboardid):
+        raise Invalid('This field must contain a valid dashboard id.')
+
+    return dashboardid
+
+
 class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
     p.implements(p.IConfigurer)
     p.implements(p.IResourceView)
     p.implements(p.ITemplateHelpers)
     p.implements(p.IRoutes, inherit=True)
-
-    def process_dashboardid(self, dashboardid, context):
-
-        dashboardid = dashboardid.strip()
-
-        if not DASHBOARD_RE.match(dashboardid):
-            raise Invalid('This field must contain a valid dashboard id.')
-
-        return dashboardid
 
     def update_config(self, config):
         p.toolkit.add_template_directory(config, 'templates')
@@ -77,7 +78,7 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
             'title': 'WireCloud',
             'icon': 'bar-chart-o' if p.toolkit.check_ckan_version(min_version='2.7') else 'bar-chart',
             'schema': {
-                'dashboard': [unicode, self.process_dashboardid],
+                'dashboard': [unicode, process_dashboardid],
             },
             'iframed': False,
             'always_available': True,
