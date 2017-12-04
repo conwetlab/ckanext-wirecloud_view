@@ -49,7 +49,7 @@ if wirecloud_url[-1:] != "/":
     wirecloud_url += "/"
 
 
-def process_dashboardid(self, dashboardid, context):
+def process_dashboardid(dashboardid, context):
 
     dashboardid = dashboardid.strip()
 
