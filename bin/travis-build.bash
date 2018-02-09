@@ -12,6 +12,9 @@ git clone https://github.com/ckan/ckan
 cd ckan
 git checkout ckan-$CKANVERSION
 python setup.py develop
+
+sed -i "s|psycopg2==2.4.5|psycopg2==2.7.1|g" requirements.txt
+
 pip install -r requirements.txt --allow-all-external
 pip install -r dev-requirements.txt --allow-all-external
 cd -
