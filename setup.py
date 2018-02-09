@@ -51,8 +51,7 @@ setup(
     keywords='CKAN dashboard data visualization WireCloud',
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires=[
-        'ckanext-oauth2>0.4.0',
-        'requests-oauthlib==0.8.0',
+        'ckanext-oauth2>=0.4.0',
         'six',
     ],
     include_package_data=True,
