@@ -50,9 +50,10 @@ To install ckanext-wirecloud_view:
     sudo service apache2 graceful
     ```
 
+
 ## Development Installation
 
-To install ckanext-wirecloudview for development, activate your CKAN virtualenv and
+To install ckanext-wirecloud_view for development, activate your CKAN virtualenv and
 do:
 
 ```
