@@ -20,23 +20,20 @@
 
 from setuptools import setup, find_packages
 from codecs import open
-from os import path
+import os
 
 import ckanext.wirecloudview
 
 
-# Get the long description from the relevant file
-try:
-    import pypandoc
-    long_description = pypandoc.convert_file('README.md', 'rst', format="markdown_github")
-except(IOError, ImportError):
-    long_description = open('README.md').read()
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
     name='ckanext-wirecloud_view',
     version=ckanext.wirecloudview.__version__,
     description='Provide visualization dashboards on CKAN using WireCloud',
-    long_description=long_description,
+    long_description=read('README.md'),
+    long_description_content_type="text/markdown",
     url='https://github.com/conwetlab/ckanext-wirecloud_view',
     author='CoNWeT Lab',
     author_email='wirecloud@conwet.com',
