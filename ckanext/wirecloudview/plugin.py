@@ -68,9 +68,7 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
     def update_config(self, config):
         p.toolkit.add_template_directory(config, 'templates')
-        p.toolkit.add_resource('fanstatic', 'wirecloud_typeahead')
-        p.toolkit.add_resource('fanstatic', 'wirecloud_option')
-        p.toolkit.add_resource('fanstatic', 'wirecloud_view')
+        p.toolkit.add_resource(b'fanstatic', b'wirecloud_view')
 
     def info(self):
         return {
@@ -97,25 +95,15 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
     def get_helpers(self):
 
-        def _get_workspaces():
-
-            # Create a OAuth2 Session
-            token = p.toolkit.c.usertoken
-            oauth = OAuth2Session(client_id, token=token)
-            # Request workspaces
-            response = oauth.get(urljoin(self.wirecloud_url, "api/workspaces") + '?access_token=%s' % token['access_token'])
-            return response.text
-
         return {
-            'get_workspaces': _get_workspaces,
             'get_editor_url': lambda: urljoin(self.wirecloud_url, self.editor_dashboard),
             'get_dashboard_url': lambda dashboard, resourceid, ckanserver: urljoin(self.wirecloud_url, dashboard) + '?mode=embedded&resourceid=' + resourceid + '&ckanserver=' + ckanserver
         }
 
     def before_map(self, m):
-        # FIXME: Include all the content in the body of the request
-        m.connect('/wirecloud_view/resource/{resource_id}/view/{view_id}/workspace/{dashboard_path:.* ?}',
-                  controller='ckanext.wirecloudview.plugin:WirecloudViewController',
-                  action='notify_dashboard_path', conditions=POST)
+
+        m.connect('/api/3/wirecloud_view/dashboard_autocomplete',
+                  controller='ckanext.wirecloudview.controller:WireCloudViewController',
+                  action='get_workspaces', conditions=GET)
 
         return m

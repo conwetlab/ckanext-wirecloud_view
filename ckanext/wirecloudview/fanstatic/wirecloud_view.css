@@ -1,26 +1,28 @@
 .wc_sp {
-	display: block;
-	margin-bottom: 10px;
+    display: block;
+    margin-bottom: 10px;
+    line-height: 20px;
+    font-size: 14px;
 }
 
 .option {
-	border: 1px solid #CACACA;
-	border-radius: 4px;
-	max-height: 1000px;
-	overflow: hidden;
-	margin-top: 10px;
-	padding: 10px;
-	transition: 0.6s;
+    border: 1px solid #CACACA;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 10px;
+    padding: 10px;
+    transition: 0.6s;
+    box-sizing: content-box;
 }
 
 .small {
-	transition: 0.2s;
-	max-height: 20px;
-	background: #F0F0F0;
+    transition: 0.2s;
+    max-height: 20px;
+    background: #F0F0F0;
 }
 
 .small:hover {
-	cursor: pointer;
-	background: #FCFCFC;
-	transition: 0.2s;
+    cursor: pointer;
+    background: #FCFCFC;
+    transition: 0.2s;
 }
