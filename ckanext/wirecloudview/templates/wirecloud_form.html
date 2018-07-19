@@ -6,7 +6,7 @@
 {% set dashboard_attrs = {'data-module': 'autocomplete', 'data-module-source': '/api/3/wirecloud_view/dashboard_autocomplete?incomplete=?'} %}
 {{ form.input('dashboard', id='field-dashboard', label=_('Dashboard'), placeholder=_('eg. myuser/dashboard'), value=data.dashboard, error=errors.dashboard, classes=['control-full'], attrs=dashboard_attrs) }}
 
-<div class="option small" data-module="wirecloud_option">
+<div class="control-group form-group option small" data-module="wirecloud_option">
 	<span class="wc_sp">Create a new dashboard</span>
 	<iframe id="graph_editor" style="margin:auto; height:900px;display:block; width:100%;" src="{{ h.get_editor_url() + '?mode=embedded&ckanserver=' + "://".join(h.get_site_protocol_and_host()) + '&resourceid=' + resource.get('id')}}" frameborder="0" allowfullscreen></iframe>
 </div>
