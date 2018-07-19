@@ -24,7 +24,7 @@ from ckan.plugins.toolkit import Invalid
 from mock import MagicMock, patch
 import six
 
-import ckanext.wirecloudview.plugin as plugin
+from ckanext.wirecloud_view import plugin
 
 
 class WirecloudViewPluginTest(unittest.TestCase):

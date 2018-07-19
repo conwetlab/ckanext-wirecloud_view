@@ -23,12 +23,12 @@ import unittest
 
 from mock import DEFAULT, patch
 
-from ckanext.wirecloudview.controller import WireCloudViewController
+from ckanext.wirecloud_view.controller import WireCloudViewController
 
 
 class WirecloudViewControllerTest(unittest.TestCase):
 
-    @patch.multiple("ckanext.wirecloudview.controller", request=DEFAULT, get_plugin=DEFAULT, toolkit=DEFAULT, OAuth2Session=DEFAULT, response=DEFAULT)
+    @patch.multiple("ckanext.wirecloud_view.controller", request=DEFAULT, get_plugin=DEFAULT, toolkit=DEFAULT, OAuth2Session=DEFAULT, response=DEFAULT)
     def test_get_workspaces(self, request, get_plugin, toolkit, OAuth2Session, response):
         self.controller = WireCloudViewController()
         self.controller.client_id = "aclientid"

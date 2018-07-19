@@ -24,7 +24,7 @@ To install ckanext-wirecloud_view:
     . /usr/lib/ckan/default/bin/activate
     ```
 
-2. Install the ckanext-wirecloudview Python package into your virtual environment:
+2. Install the `ckanext-wirecloud_view` Python package into your virtual environment:
 
     ```
     pip install ckanext-wirecloud_view

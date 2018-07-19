@@ -103,7 +103,7 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
     def before_map(self, m):
 
         m.connect('/api/3/wirecloud_view/dashboard_autocomplete',
-                  controller='ckanext.wirecloudview.controller:WireCloudViewController',
+                  controller='ckanext.wirecloud_view.controller:WireCloudViewController',
                   action='get_workspaces', conditions=GET)
 
         return m

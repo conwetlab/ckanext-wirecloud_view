@@ -22,7 +22,7 @@ from setuptools import setup, find_packages
 from codecs import open
 import os
 
-import ckanext.wirecloudview
+import ckanext.wirecloud_view
 
 
 def read(fname):
@@ -30,7 +30,7 @@ def read(fname):
 
 setup(
     name='ckanext-wirecloud_view',
-    version=ckanext.wirecloudview.__version__,
+    version=ckanext.wirecloud_view.__version__,
     description='Provide visualization dashboards on CKAN using WireCloud',
     long_description=read('README.md'),
     long_description_content_type="text/markdown",
@@ -56,6 +56,6 @@ setup(
     data_files=[],
     entry_points='''
         [ckan.plugins]
-        wirecloud_view=ckanext.wirecloudview.plugin:WirecloudView
+        wirecloud_view=ckanext.wirecloud_view.plugin:WirecloudView
     ''',
 )
