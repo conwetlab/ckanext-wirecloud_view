@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 # Copyright (c) 2015-2016 CoNWeT Lab., Universidad Politécnica de Madrid
+# Copyright (c) 2018 Future Internet Consulting and Development Solutions S.L.
 
 # This file is part of CKAN WireCloud View Extension.
 
@@ -18,24 +19,18 @@
 # along with CKAN WireCloud View Extension. If not, see <http://www.gnu.org/licenses/>.
 
 
-import ckan.lib.base as base
-import ckan.model as model
-import ckan.plugins as p
 import logging
+import os
 import pylons.config as config
 import re
-import random
 from urlparse import urljoin
 
-
+import ckan.plugins as p
 from ckan.plugins.toolkit import Invalid
 from requests_oauthlib import OAuth2Session
-from ckan.common import request
 
 
 log = logging.getLogger(__name__)
-wirecloud_url = config.get('ckan.wirecloud_view.url', 'https://mashup.lab.fiware.org')
-editor_dashboard = config.get('ckan.wirecloud_view.editor_dashboard', 'wirecloud/ckan-editor')
 client_id = config.get('ckan.oauth2.client_id', False)
 
 DASHBOARD_RE = re.compile('^[^/]+/[^/]+$')
@@ -44,9 +39,6 @@ GET = dict(method=['GET'])
 PUT = dict(method=['PUT'])
 POST = dict(method=['POST'])
 DELETE = dict(method=['DELETE'])
-
-if wirecloud_url[-1:] != "/":
-    wirecloud_url += "/"
 
 
 def process_dashboardid(dashboardid, context):
@@ -61,10 +53,18 @@ def process_dashboardid(dashboardid, context):
 
 class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
 
+    p.implements(p.IConfigurable)
     p.implements(p.IConfigurer)
     p.implements(p.IResourceView)
     p.implements(p.ITemplateHelpers)
     p.implements(p.IRoutes, inherit=True)
+
+    def configure(self, config):
+        self.wirecloud_url = os.environ.get('CKAN_WIRECLOUD_VIEW_URL', config.get('ckan.wirecloud_view.url', 'https://mashup.lab.fiware.org'))
+        self.editor_dashboard = os.environ.get('CKAN_WIRECLOUD_VIEW_EDITOR_DASHBOARD', config.get('ckan.wirecloud_view.editor_dashboard', 'wirecloud/ckan-editor'))
+
+        if self.wirecloud_url[-1:] != "/":
+            self.wirecloud_url += "/"
 
     def update_config(self, config):
         p.toolkit.add_template_directory(config, 'templates')
@@ -103,13 +103,13 @@ class WirecloudView(p.SingletonPlugin, p.toolkit.DefaultDatasetForm):
             token = p.toolkit.c.usertoken
             oauth = OAuth2Session(client_id, token=token)
             # Request workspaces
-            response = oauth.get(wirecloud_url + "api/workspaces" + '?access_token=%s' % token['access_token'])
+            response = oauth.get(urljoin(self.wirecloud_url, "api/workspaces") + '?access_token=%s' % token['access_token'])
             return response.text
 
         return {
             'get_workspaces': _get_workspaces,
-            'get_editor_url': lambda: urljoin(wirecloud_url, editor_dashboard),
-            'get_dashboard_url': lambda dashboard, resourceid, ckanserver: urljoin(wirecloud_url, dashboard) + '?mode=embedded&resourceid=' + resourceid + '&ckanserver=' + ckanserver
+            'get_editor_url': lambda: urljoin(self.wirecloud_url, self.editor_dashboard),
+            'get_dashboard_url': lambda dashboard, resourceid, ckanserver: urljoin(self.wirecloud_url, dashboard) + '?mode=embedded&resourceid=' + resourceid + '&ckanserver=' + ckanserver
         }
 
     def before_map(self, m):
