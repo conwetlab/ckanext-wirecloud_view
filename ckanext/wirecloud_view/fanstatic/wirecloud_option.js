@@ -10,12 +10,7 @@ ckan.module('wirecloud_option', function ($, _) {
 
 			for (var elem = 0; elem < elems.length; elem++){
 				elems[elem].onclick = function () {
-
-					if (this.classList.contains("small")) {
-                        this.classList.remove("small");
-					} else {
-                        this.classList.add("small");
-                    }
+                    $("graph_editor_div").toggle("fast");
 				}
 			}
 
@@ -28,6 +23,8 @@ ckan.module('wirecloud_option', function ($, _) {
 
                 document.getElementById("field-dashboard").value = event.data;
 			    document.getElementsByClassName('option')[0].classList.add("small");
+                // Assure hidden at start
+                $("graph_editor_div").toggle(false);
             };
 
             window.addEventListener("message", receiveMessage, false);
