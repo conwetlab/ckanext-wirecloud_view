@@ -10,7 +10,7 @@ ckan.module('wirecloud_option', function ($, _) {
 
 			for (var elem = 0; elem < elems.length; elem++){
 				elems[elem].onclick = function () {
-                    $("graph_editor_div").toggle("fast");
+                    $("#graph_editor_div").toggle("fast");
 				}
 			}
 
