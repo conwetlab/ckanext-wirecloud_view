@@ -19,7 +19,6 @@
 # along with Wirecloud.  If not, see <http://www.gnu.org/licenses/>.
 
 from setuptools import setup, find_packages
-from codecs import open
 import os
 
 import ckanext.wirecloud_view
@@ -42,10 +41,10 @@ setup(
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
     ],
-    keywords='CKAN dashboard data visualization WireCloud',
+    keywords='CKAN dashboard data visualization WireCloud FIWARE',
     packages=find_packages(exclude=['contrib', 'docs', 'tests*']),
     install_requires=[
         'ckanext-oauth2>=0.4.0',
