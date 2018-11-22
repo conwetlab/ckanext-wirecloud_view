@@ -9,6 +9,6 @@
 <div class="control-group form-group option small" data-module="wirecloud_option">
 	<span class="wc_sp">Create a new dashboard</span>
 </div>
-<div id="graph_editor_div" style="display:none;">
+<div id="graph_editor_div">
     <iframe id="graph_editor" style="margin:auto; height:900px;display:block; width:100%;" src="{{ h.get_editor_url() + '?mode=embedded&ckanserver=' + "://".join(h.get_site_protocol_and_host()) + '&resourceid=' + resource.get('id')}}" frameborder="0" allowfullscreen></iframe>
 </div>
