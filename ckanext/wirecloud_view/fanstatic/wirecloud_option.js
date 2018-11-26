@@ -1,36 +1,32 @@
 "use strict";
 
 ckan.module('wirecloud_option', function ($, _) {
-	return {
-		initialize: function () {
+    return {
+        initialize: function () {
 
-			$.proxyAll(this, /_on/);
+            $.proxyAll(this, /_on/);
 
-			var elems = document.getElementsByClassName('option');
+            var elems = document.getElementsByClassName('option');
 
-			for (var elem = 0; elem < elems.length; elem++){
-				elems[elem].onclick = function () {
-
-					if (this.classList.contains("small")) {
-                        this.classList.remove("small");
-					} else {
-                        this.classList.add("small");
-                    }
-				}
-			}
+            for (var elem = 0; elem < elems.length; elem++){
+                elems[elem].onclick = function () {
+                    $("#graph_editor_div").toggle("fast");
+                }
+            }
+            // Assure hidden at start
+            $("#graph_editor_div").toggle(false);
 
             var receiveMessage = function receiveMessage(event) {
-                // For Chrome, the origin property is in the event.originalEvent object.
-                // var origin = event.origin || event.originalEvent.origin;
-                // if (origin !== "http://example.org:8080") {
-                //    return;
-                //}
-
-                document.getElementById("field-dashboard").value = event.data;
-			    document.getElementsByClassName('option')[0].classList.add("small");
+                // Avoid multiple events coming from within CKAN server
+                var u = new URL(document.getElementById("graph_editor").src);
+                if (event.origin.startsWith(u.protocol + "//" + u.host)) {
+                    document.getElementById("field-dashboard").value = event.data;
+                    // Hide after creating dashboard
+                    $("#graph_editor_div").toggle(false);
+                }
             };
 
             window.addEventListener("message", receiveMessage, false);
-		}
-	};
+        }
+    };
 });
